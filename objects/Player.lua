@@ -2,7 +2,7 @@ local love = require("love")
 local Laser = require("objects.Laser")
 require("globals")
 
-function Player(numLives)
+function Player(numLives, sfx)
     local SHIP_SIZE = 30
     local VIEW_ANGLE = math.rad(90)
     local MAX_NUM_LASERS = 10
@@ -50,6 +50,8 @@ function Player(numLives)
         shootLaser = function(self)
             if #self.lasers <= MAX_NUM_LASERS then
                 table.insert(self.lasers, Laser(self.x, self.y, self.angle))
+
+                sfx:playSFX("laser")
             end
         end,
 
@@ -192,7 +194,10 @@ function Player(numLives)
                 if self.thrusting then
                     self.thrust.x = self.thrust.x + self.thrust.speed * math.cos(self.angle) / FPS
                     self.thrust.y = self.thrust.y - self.thrust.speed * math.sin(self.angle) / FPS
+
+                    sfx:playSFX("thruster", "slow")
                 else
+                    sfx:stopSFX("thruster")
                     if self.thrust.x ~= 0 or self.thrust.y ~= 0 then
                         self.thrust.x = self.thrust.x - friction * self.thrust.x / FPS
                         self.thrust.y = self.thrust.y - friction * self.thrust.y / FPS

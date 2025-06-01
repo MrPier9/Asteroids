@@ -3,7 +3,7 @@ local love = require("love")
 local Text = require("components.Text")
 local Asteroid = require("objects.Asteroid")
 
-function Game(saveData)
+function Game(saveData, sfx)
     gAsteroids = {}
 
     return {
@@ -100,7 +100,7 @@ function Game(saveData)
                     asY = math.floor(math.random(love.graphics.getHeight()))
                 until calculateDistance(player.x, player.y, asX, asY) > ASTEROID_SIZE * 2 + player.radius
 
-                table.insert(gAsteroids, 1, Asteroid(asX, asY, ASTEROID_SIZE, self.level))
+                table.insert(gAsteroids, 1, Asteroid(asX, asY, ASTEROID_SIZE, self.level, sfx))
             end
         end
     }

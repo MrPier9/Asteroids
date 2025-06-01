@@ -4,6 +4,7 @@ local love = require("love")
 local Player = require("objects.Player")
 local Game = require("states.Game")
 local Menu = require("states.Menu")
+local SFX = require("components.SFX")
 
 local resetComplete = false
 
@@ -11,9 +12,10 @@ math.randomseed(os.time())
 
 function reset()
     local saveData = readJSON("save")
-    player = Player(3)
-    game = Game(saveData)
-    menu = Menu(game, player)
+    sfx = SFX()
+    player = Player(3, sfx)
+    game = Game(saveData, sfx)
+    menu = Menu(game, player, sfx)
     destroyAst = false
 end
 
@@ -23,6 +25,8 @@ function love.load()
     mouseX, mouseY = 0, 0
 
     reset()
+
+    sfx:playBGM()
 end
 
 function love.keypressed(key)
@@ -72,16 +76,16 @@ function love.update(dt)
                     destroyAst = true
                 end
             else
+                sfx:playSFX("shipExplosion", "single")
                 player.exploadTime = player.exploadTime - 1
 
                 if player.exploadTime == 0 then
                     if player.lives - 1 <= 0 then
                         game:changeGameState("ended")
-                        player = Player()
                         return
                     end
 
-                    player = Player(player.lives - 1)
+                    player = Player(player.lives - 1, sfx)
                 end
             end
 
